@@ -92,6 +92,7 @@ module.exports = {
                         '--dump-json',
                         '--flat-playlist',
                         '--no-warnings',
+                        '--no-config',
                         '--cookies', '/home/ubuntu/discordbot/youtube_cookies.txt'
                     ]);
 

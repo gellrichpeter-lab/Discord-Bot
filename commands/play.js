@@ -138,6 +138,7 @@ module.exports = {
                         url,
                         '--dump-json',
                         '--no-warnings',
+                        '--no-config',
                         '--cookies', '/home/ubuntu/discordbot/youtube_cookies.txt'
                     ]);
                     const info = JSON.parse(metadata);

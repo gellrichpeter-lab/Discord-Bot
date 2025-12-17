@@ -51,7 +51,7 @@ module.exports = {
     // YT-DLP Configuration
     YTDLP: {
         FORMAT: 'bestaudio',
-        FLAGS: ['--get-url', '--no-warnings', '--no-playlist', '--cookies', '/home/ubuntu/discordbot/youtube_cookies.txt'],
+        FLAGS: ['--get-url', '--no-warnings', '--no-playlist', '--no-config', '--cookies', '/home/ubuntu/discordbot/youtube_cookies.txt'],
     },
 
     // Platform Support
