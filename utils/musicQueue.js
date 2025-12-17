@@ -296,13 +296,14 @@ class MusicQueue {
             console.log(`[MUSIC] Preparing to play: ${this.currentSong.title} in guild ${this.guildId}`);
             console.log(`[MUSIC] URL: ${this.currentSong.url}`);
 
-            // Get direct audio URL using yt-dlp
+            // Get direct audio URL using yt-dlp with Android client
             let audioUrl;
             try {
                 audioUrl = await ytdlp.execPromise([
                     this.currentSong.url,
                     '-f', YTDLP.FORMAT,
-                    ...YTDLP.FLAGS
+                    ...YTDLP.FLAGS,
+                    '--extractor-args', 'youtube:player_client=android'
                 ]);
             } catch (ytdlpError) {
                 console.error(`[ERROR] YT-DLP failed to get audio URL:`, ytdlpError);

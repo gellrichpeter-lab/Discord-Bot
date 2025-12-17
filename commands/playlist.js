@@ -86,12 +86,13 @@ module.exports = {
                     const YTDlpWrap = require('yt-dlp-wrap').default;
                     const ytdlp = new YTDlpWrap('yt-dlp'); // Use system yt-dlp on Linux
 
-                    // Get playlist metadata from YouTube using yt-dlp
+                    // Get playlist metadata from YouTube using yt-dlp with Android client
                     const metadata = await ytdlp.execPromise([
                         musicValidation.url,
                         '--dump-json',
                         '--flat-playlist',
-                        '--no-warnings'
+                        '--no-warnings',
+                        '--extractor-args', 'youtube:player_client=android'
                     ]);
 
                     // Parse playlist entries
