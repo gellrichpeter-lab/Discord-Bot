@@ -133,12 +133,12 @@ module.exports = {
                 const ytdlp = new YTDlpWrap('yt-dlp'); // Use system yt-dlp on Linux
 
                 try {
-                    // Get metadata from YouTube using yt-dlp with Android client to bypass bot detection
+                    // Get metadata from YouTube using yt-dlp with cookies
                     const metadata = await ytdlp.execPromise([
                         url,
                         '--dump-json',
                         '--no-warnings',
-                        '--extractor-args', 'youtube:player_client=android'
+                        '--cookies', '/home/ubuntu/discordbot/youtube_cookies.txt'
                     ]);
                     const info = JSON.parse(metadata);
 
