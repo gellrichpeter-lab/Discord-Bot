@@ -82,8 +82,37 @@ module.exports = {
                         thumbnail: entry.thumbnail,
                     }));
                 } else {
-                    playlistInfo = await play.playlist_info(musicValidation.url);
-                    tracks = await playlistInfo.all_videos();
+                    // YouTube - use yt-dlp to avoid bot detection
+                    const YTDlpWrap = require('yt-dlp-wrap').default;
+                    const ytdlp = new YTDlpWrap('yt-dlp'); // Use system yt-dlp on Linux
+
+                    // Get playlist metadata from YouTube using yt-dlp
+                    const metadata = await ytdlp.execPromise([
+                        musicValidation.url,
+                        '--dump-json',
+                        '--flat-playlist',
+                        '--no-warnings'
+                    ]);
+
+                    // Parse playlist entries
+                    const entries = metadata.trim().split('\n').map(line => JSON.parse(line));
+
+                    if (entries.length === 0) {
+                        return interaction.editReply(MESSAGES.PLAYLIST_EMPTY);
+                    }
+
+                    // Create mock playlistInfo and tracks for compatibility
+                    playlistInfo = {
+                        title: entries[0].playlist_title || entries[0].playlist || 'YouTube Playlist',
+                        thumbnail: { url: entries[0].thumbnail || null },
+                    };
+
+                    tracks = entries.map(entry => ({
+                        title: entry.title,
+                        url: entry.url || `https://www.youtube.com/watch?v=${entry.id}`,
+                        durationInSec: entry.duration || 0,
+                        thumbnails: [{ url: entry.thumbnail }],
+                    }));
                 }
             } catch (error) {
                 console.error('[ERROR] Failed to fetch playlist:', error);

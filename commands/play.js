@@ -128,17 +128,32 @@ module.exports = {
                     return interaction.editReply('Could not load SoundCloud track. It may be private or unavailable.');
                 }
             } else {
-                // YouTube - use play-dl as before
-                const info = await play.video_info(url);
-                song = {
-                    title: info.video_details.title,
-                    url: info.video_details.url,
-                    duration: info.video_details.durationInSec,
-                    thumbnail: info.video_details.thumbnails[0]?.url,
-                    requestedBy: interaction.user.tag,
-                    platform: 'youtube',
-                };
-                console.log('[DEBUG] YouTube video loaded:', song.title);
+                // YouTube - use yt-dlp to avoid bot detection
+                const YTDlpWrap = require('yt-dlp-wrap').default;
+                const ytdlp = new YTDlpWrap('yt-dlp'); // Use system yt-dlp on Linux
+
+                try {
+                    // Get metadata from YouTube using yt-dlp
+                    const metadata = await ytdlp.execPromise([
+                        url,
+                        '--dump-json',
+                        '--no-warnings'
+                    ]);
+                    const info = JSON.parse(metadata);
+
+                    song = {
+                        title: info.title || 'Unknown Video',
+                        url: url,
+                        duration: info.duration || 0,
+                        thumbnail: info.thumbnail || null,
+                        requestedBy: interaction.user.tag,
+                        platform: 'youtube',
+                    };
+                    console.log('[DEBUG] YouTube video loaded:', song.title);
+                } catch (ytError) {
+                    console.error('[ERROR] Failed to get YouTube metadata:', ytError);
+                    return interaction.editReply('Could not load YouTube video. It may be private or unavailable.');
+                }
             }
 
             // Get queue and add song
